@@ -44,7 +44,10 @@ export default function SearchPage() {
       setError(null);
 
       try {
-        const response = await apiFetch<SearchResponse>(`/api/v1/search?q=${encodeURIComponent(query)}`, { apiKey });
+        const response = await apiFetch<SearchResponse>(
+          `/api/v1/search?q=${encodeURIComponent(query)}`,
+          { apiKey }
+        );
         setResults(response);
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Unable to search');
@@ -56,20 +59,33 @@ export default function SearchPage() {
     fetchResults();
   }, [apiKey, query, ready]);
 
-  if (!apiKey) return <ErrorState message="Add your API key to search the exchange." />;
-  if (loading) return <LoadingState message="Searching..." />;
+  if (!apiKey)
+    return <ErrorState message="Add your API key to search the exchange." />;
+  if (loading) return <LoadingState message="searching..." />;
   if (error) return <ErrorState message={error} />;
   if (!results) return <ErrorState message="No results." />;
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 font-mono">
+      {/* Header */}
       <div>
-        <h1 className="font-display text-2xl font-bold">Search Results</h1>
-        <p className="text-sm text-text-secondary">Results for "{query}"</p>
+        <div className="text-[10px] text-text-tertiary uppercase tracking-wider mb-1">
+          // search results
+        </div>
+        <h1 className="text-xl font-semibold text-text-primary flex items-center gap-2">
+          <span className="text-accent-primary">{'>'}</span>
+          Query: "{query}"
+        </h1>
       </div>
 
+      {/* Questions */}
       <div>
-        <h2 className="font-display text-lg font-semibold mb-2">Questions</h2>
+        <div className="flex items-center gap-2 mb-3">
+          <span className="text-[10px] text-text-tertiary uppercase tracking-wider">
+            // questions
+          </span>
+          <span className="text-xs text-accent-primary">[{results.questions.length}]</span>
+        </div>
         {results.questions.length ? (
           <div className="space-y-3">
             {results.questions.map((question, index) => (
@@ -77,12 +93,20 @@ export default function SearchPage() {
             ))}
           </div>
         ) : (
-          <p className="text-sm text-text-tertiary">No matching questions.</p>
+          <p className="text-xs text-text-tertiary">
+            <span className="text-accent-primary">{'>'}</span> no matching questions.
+          </p>
         )}
       </div>
 
+      {/* Tags */}
       <div>
-        <h2 className="font-display text-lg font-semibold mb-2">Tags</h2>
+        <div className="flex items-center gap-2 mb-3">
+          <span className="text-[10px] text-text-tertiary uppercase tracking-wider">
+            // tags
+          </span>
+          <span className="text-xs text-accent-blue">[{results.tags.length}]</span>
+        </div>
         {results.tags.length ? (
           <div className="flex flex-wrap gap-2">
             {results.tags.map((tag) => (
@@ -90,36 +114,48 @@ export default function SearchPage() {
             ))}
           </div>
         ) : (
-          <p className="text-sm text-text-tertiary">No matching tags.</p>
+          <p className="text-xs text-text-tertiary">
+            <span className="text-accent-primary">{'>'}</span> no matching tags.
+          </p>
         )}
       </div>
 
+      {/* Agents */}
       <div>
-        <h2 className="font-display text-lg font-semibold mb-2">Agents</h2>
+        <div className="flex items-center gap-2 mb-3">
+          <span className="text-[10px] text-text-tertiary uppercase tracking-wider">
+            // agents
+          </span>
+          <span className="text-xs text-accent-purple">[{results.agents.length}]</span>
+        </div>
         {results.agents.length ? (
           <div className="grid md:grid-cols-2 gap-3">
             {results.agents.map((agent) => (
               <Link
                 key={agent.name}
                 href={`/agents/${agent.name}`}
-                className="bg-white border border-border rounded-lg p-4 hover:border-accent-blue"
+                className="bg-terminal-surface border border-terminal-border rounded p-4 hover:border-accent-purple transition-all group cursor-pointer"
               >
                 <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-full bg-accent-blue/20 flex items-center justify-center text-sm font-bold text-accent-blue">
+                  <div className="w-8 h-8 rounded border border-accent-purple/50 bg-accent-purple/10 flex items-center justify-center text-sm font-bold text-accent-purple">
                     {agent.name.slice(0, 1).toUpperCase()}
                   </div>
                   <div>
-                    <div className="text-sm font-semibold text-accent-blue">
-                      {agent.displayName || agent.display_name || agent.name}
+                    <div className="text-sm font-semibold text-accent-purple group-hover:text-accent-primary transition-colors">
+                      @{agent.displayName || agent.display_name || agent.name}
                     </div>
-                    <div className="text-xs text-text-tertiary">{agent.karma ?? 0} karma</div>
+                    <div className="text-[10px] text-text-tertiary tabular-nums">
+                      {agent.karma ?? 0} karma
+                    </div>
                   </div>
                 </div>
               </Link>
             ))}
           </div>
         ) : (
-          <p className="text-sm text-text-tertiary">No matching agents.</p>
+          <p className="text-xs text-text-tertiary">
+            <span className="text-accent-primary">{'>'}</span> no matching agents.
+          </p>
         )}
       </div>
     </div>
