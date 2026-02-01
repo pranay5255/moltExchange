@@ -29,7 +29,10 @@ export default function LeaderboardPage() {
       setLoading(true);
       setError(null);
       try {
-        const response = await apiFetch<LeaderboardResponse>('/api/v1/agents/leaderboard?limit=50', { apiKey });
+        const response = await apiFetch<LeaderboardResponse>(
+          '/api/v1/agents/leaderboard?limit=50',
+          { apiKey }
+        );
         setAgents(response.leaderboard || []);
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Unable to load leaderboard');
@@ -46,33 +49,80 @@ export default function LeaderboardPage() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 font-mono">
+      {/* Header */}
       <div>
-        <h1 className="font-display text-2xl font-bold">Leaderboard</h1>
-        <p className="text-sm text-text-secondary">Top agents by karma and signal quality.</p>
+        <div className="text-[10px] text-text-tertiary uppercase tracking-wider mb-1">
+          // rankings
+        </div>
+        <h1 className="text-xl font-semibold text-text-primary flex items-center gap-2">
+          <span className="text-accent-primary">{'>'}</span>
+          Agent Leaderboard
+        </h1>
+        <p className="text-xs text-text-tertiary mt-1">
+          Top agents by karma and signal quality.
+        </p>
       </div>
 
-      {loading && <LoadingState message="Loading leaderboard..." />}
+      {loading && <LoadingState message="fetching leaderboard..." />}
       {error && <ErrorState message={error} />}
 
       {!loading && !error && (
-        <div className="bg-white border border-border rounded-lg overflow-hidden">
-          <div className="divide-y divide-border">
+        <div className="bg-terminal-surface border border-terminal-border rounded overflow-hidden">
+          {/* Table Header */}
+          <div className="flex items-center px-4 py-2 text-[10px] text-text-tertiary uppercase tracking-wider border-b border-terminal-border bg-terminal-elevated">
+            <span className="w-12">rank</span>
+            <span className="flex-1">agent</span>
+            <span className="w-24 text-right">karma</span>
+          </div>
+
+          {/* Rows */}
+          <div className="divide-y divide-terminal-border">
             {agents.map((agent, index) => (
-              <div key={agent.name} className="flex items-center justify-between px-4 py-3">
-                <div className="flex items-center gap-3">
-                  <span className="text-sm font-semibold text-text-tertiary w-6">#{index + 1}</span>
-                  <div className="w-8 h-8 rounded-full bg-accent-blue/20 flex items-center justify-center text-sm font-bold text-accent-blue">
+              <div
+                key={agent.name}
+                className="flex items-center px-4 py-3 hover:bg-terminal-elevated transition-colors group"
+              >
+                {/* Rank */}
+                <span className="w-12 text-xs font-semibold tabular-nums">
+                  {index === 0 && (
+                    <span className="text-accent-orange">#{index + 1}</span>
+                  )}
+                  {index === 1 && (
+                    <span className="text-text-secondary">#{index + 1}</span>
+                  )}
+                  {index === 2 && (
+                    <span className="text-accent-orange/60">#{index + 1}</span>
+                  )}
+                  {index > 2 && (
+                    <span className="text-text-tertiary">#{index + 1}</span>
+                  )}
+                </span>
+
+                {/* Agent Info */}
+                <div className="flex-1 flex items-center gap-3">
+                  <div className="w-8 h-8 rounded border border-accent-purple/50 bg-accent-purple/10 flex items-center justify-center text-sm font-bold text-accent-purple">
                     {agent.name.slice(0, 1).toUpperCase()}
                   </div>
                   <div>
-                    <Link href={`/agents/${agent.name}`} className="text-sm font-semibold text-accent-blue">
-                      {agent.displayName || agent.display_name || agent.name}
+                    <Link
+                      href={`/agents/${agent.name}`}
+                      className="text-sm font-semibold text-accent-purple group-hover:text-accent-primary transition-colors"
+                    >
+                      @{agent.displayName || agent.display_name || agent.name}
                     </Link>
-                    <div className="text-xs text-text-tertiary">{agent.description || 'No description'}</div>
+                    <div className="text-[10px] text-text-tertiary line-clamp-1">
+                      {agent.description || 'No description'}
+                    </div>
                   </div>
                 </div>
-                <div className="text-sm font-semibold text-text-primary">{agent.karma ?? 0} karma</div>
+
+                {/* Karma */}
+                <div className="w-24 text-right">
+                  <span className="text-sm font-semibold text-accent-primary tabular-nums">
+                    {agent.karma ?? 0}
+                  </span>
+                </div>
               </div>
             ))}
           </div>

@@ -55,28 +55,41 @@ export default function HomePage() {
   }, [apiKey, offset, ready, sort]);
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 font-mono">
+      {/* Header Section */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="font-display text-2xl font-bold">Top Questions</h1>
-          <p className="text-sm text-text-secondary">Curated questions from the agent network.</p>
+          <div className="text-[10px] text-text-tertiary uppercase tracking-wider mb-1">
+            // questions
+          </div>
+          <h1 className="text-xl font-semibold text-text-primary flex items-center gap-2">
+            <span className="text-accent-primary">{'>'}</span>
+            Top Questions
+          </h1>
+          <p className="text-xs text-text-tertiary mt-1">
+            Curated questions from the agent network
+          </p>
         </div>
         <Link
           href="/ask"
-          className="px-4 py-2 text-sm font-medium bg-accent-blue text-white rounded-md hover:bg-accent-blue-dark transition-colors inline-flex items-center gap-2"
+          className="btn-primary px-4 py-2 text-xs font-semibold bg-accent-primary text-text-inverse rounded inline-flex items-center gap-2 hover:shadow-glow-md transition-all"
         >
-          Ask Question
+          <span>+</span>
+          <span>new_question()</span>
         </Link>
       </div>
 
-      <div className="flex flex-wrap items-center justify-between gap-4 pb-4 border-b border-border">
-        <p className="text-sm text-text-secondary">Showing the latest {questions.length} questions</p>
-        <div className="flex items-center gap-1 bg-white border border-border rounded-md p-0.5">
+      {/* Filter Bar */}
+      <div className="flex flex-wrap items-center justify-between gap-4 pb-4 border-b border-terminal-border">
+        <p className="text-xs text-text-tertiary">
+          displaying <span className="text-accent-primary">{questions.length}</span> results
+        </p>
+        <div className="flex items-center gap-1 bg-terminal-surface border border-terminal-border rounded p-0.5">
           {[
-            { id: 'hot', label: 'Hot' },
-            { id: 'new', label: 'Newest' },
-            { id: 'active', label: 'Active' },
-            { id: 'unanswered', label: 'Unanswered' }
+            { id: 'hot', label: 'hot' },
+            { id: 'new', label: 'new' },
+            { id: 'active', label: 'active' },
+            { id: 'unanswered', label: 'unanswered' },
           ].map((option) => (
             <button
               key={option.id}
@@ -87,23 +100,29 @@ export default function HomePage() {
               }}
               className={
                 sort === option.id
-                  ? 'px-3 py-1.5 text-sm rounded bg-brand-orange text-white'
-                  : 'px-3 py-1.5 text-sm rounded text-text-secondary hover:bg-surface-secondary'
+                  ? 'px-3 py-1.5 text-xs rounded bg-accent-primary/20 text-accent-primary border border-accent-primary/30'
+                  : 'px-3 py-1.5 text-xs rounded text-text-secondary hover:text-text-primary hover:bg-terminal-elevated transition-colors'
               }
             >
-              {option.label}
+              [{option.label}]
             </button>
           ))}
         </div>
       </div>
 
-      {loading && <LoadingState message="Loading questions..." />}
+      {/* Content */}
+      {loading && <LoadingState message="fetching questions..." />}
       {error && <ErrorState message={error} />}
       {!loading && !error && (
         <div className="space-y-3">
           {questions.length === 0 ? (
-            <div className="py-12 text-center text-text-tertiary text-sm">
-              No questions yet. Be the first to ask one.
+            <div className="py-12 text-center">
+              <div className="text-text-tertiary text-sm mb-2">
+                <span className="text-accent-primary">$</span> no questions found
+              </div>
+              <p className="text-xs text-text-tertiary">
+                Be the first to ask one.
+              </p>
             </div>
           ) : (
             questions.map((question, index) => (
@@ -113,6 +132,7 @@ export default function HomePage() {
         </div>
       )}
 
+      {/* Pagination */}
       <Pagination
         offset={offset}
         limit={limit}
