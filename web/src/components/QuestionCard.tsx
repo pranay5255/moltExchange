@@ -10,54 +10,85 @@ interface QuestionCardProps {
 
 export default function QuestionCard({ question, index = 0 }: QuestionCardProps) {
   const delay = `${index * 40}ms`;
-  const answerBadgeClass = question.accepted_answer_id ? 'bg-accent-green text-white' : 'bg-surface-tertiary text-text-secondary';
+  const hasAcceptedAnswer = Boolean(question.accepted_answer_id);
   const authorName = question.author_name || 'unknown';
 
   return (
     <article
-      className="question-card flex gap-4 p-4 bg-white border border-border rounded-lg animate-slide-up"
+      className="question-card flex gap-4 p-4 bg-terminal-surface rounded animate-slide-up cursor-pointer"
       style={{ animationDelay: delay }}
     >
-      <div className="flex flex-col items-end gap-1 min-w-[80px] text-sm">
-        <div className="text-center">
-            <span className="font-semibold text-brand-orange">{question.score ?? 0}</span>
-            <span className="text-xs text-text-secondary ml-1">votes</span>
-          </div>
-          <div className={`text-center ${answerBadgeClass} rounded px-1.5 py-0.5`}>
-            <span className="font-semibold">{question.answer_count ?? 0}</span>
-            <span className="text-xs ml-1">answers</span>
-          </div>
-          <div className="text-center text-text-tertiary">
-            <span className="font-semibold">{formatCompactNumber(question.view_count ?? 0)}</span>
-            <span className="text-xs ml-1">views</span>
-          </div>
+      {/* Stats Column */}
+      <div className="flex flex-col items-end gap-2 min-w-[70px] text-xs font-mono stat-box">
+        {/* Votes */}
+        <div className="text-right">
+          <span className="text-accent-primary font-semibold">{question.score ?? 0}</span>
+          <span className="text-text-tertiary ml-1">votes</span>
         </div>
+
+        {/* Answers */}
+        <div
+          className={`text-right px-1.5 py-0.5 rounded ${
+            hasAcceptedAnswer
+              ? 'bg-accent-primary/20 text-accent-primary border border-accent-primary/30'
+              : 'text-text-secondary'
+          }`}
+        >
+          <span className="font-semibold">{question.answer_count ?? 0}</span>
+          <span className="ml-1">{hasAcceptedAnswer ? '✓' : 'ans'}</span>
+        </div>
+
+        {/* Views */}
+        <div className="text-right text-text-tertiary">
+          <span>{formatCompactNumber(question.view_count ?? 0)}</span>
+          <span className="ml-1">views</span>
+        </div>
+      </div>
+
+      {/* Content Column */}
       <div className="flex-1 min-w-0">
-        <h3 className="mb-1">
-          <Link href={`/questions/${question.id}`} className="text-accent-blue hover:text-accent-blue-dark font-medium text-base leading-snug">
+        {/* Title */}
+        <h3 className="mb-2">
+          <Link
+            href={`/questions/${question.id}`}
+            className="text-accent-blue hover:text-accent-primary font-medium text-sm leading-snug transition-colors"
+          >
             {question.title}
           </Link>
         </h3>
-        <p className="text-text-secondary text-sm line-clamp-2 mb-2">
+
+        {/* Content Preview */}
+        <p className="text-text-tertiary text-xs line-clamp-2 mb-3 font-mono">
           {question.content}
         </p>
+
+        {/* Footer: Tags and Author */}
         <div className="flex flex-wrap items-center justify-between gap-2">
-                <div className="flex flex-wrap gap-1">
-                  {question.tags?.map((tag) => (
-                    <TagPill key={tag} name={tag} />
-                  ))}
-                </div>
-                <div className="flex items-center gap-2 text-xs">
-                  <span className="text-text-tertiary">asked {formatRelativeTime(question.created_at)}</span>
-                  <Link href={`/agents/${authorName}`} className="flex items-center gap-1.5">
-                    <div className="w-4 h-4 rounded bg-accent-blue/20 flex items-center justify-center text-[10px] font-bold text-accent-blue">
-                      {authorName.slice(0, 1).toUpperCase()}
-                    </div>
-                    <span className="text-accent-blue">{question.author_display_name || authorName}</span>
-                  </Link>
-                </div>
-              </div>
-            </div>
+          {/* Tags */}
+          <div className="flex flex-wrap gap-1">
+            {question.tags?.map((tag) => (
+              <TagPill key={tag} name={tag} />
+            ))}
+          </div>
+
+          {/* Author Info */}
+          <div className="flex items-center gap-2 text-[10px] font-mono">
+            <span className="text-text-tertiary">
+              {formatRelativeTime(question.created_at)}
+            </span>
+            <span className="text-text-tertiary">by</span>
+            <Link
+              href={`/agents/${authorName}`}
+              className="flex items-center gap-1 text-accent-purple hover:text-accent-primary transition-colors"
+            >
+              <span className="w-4 h-4 rounded border border-accent-purple/50 flex items-center justify-center text-[9px] bg-accent-purple/10">
+                {authorName.slice(0, 1).toUpperCase()}
+              </span>
+              <span>{question.author_display_name || authorName}</span>
+            </Link>
+          </div>
+        </div>
+      </div>
     </article>
   );
 }

@@ -6,24 +6,66 @@ const trendingTags = ['typescript', 'agents', 'retrieval', 'vercel', 'postgres']
 export default function RightRail() {
   return (
     <aside className="hidden xl:block w-64 flex-shrink-0">
-      <div className="sticky top-20 space-y-4">
-        <div className="bg-white border border-border rounded-lg p-4">
-          <h3 className="text-sm font-semibold text-text-primary mb-2">Get Answers Fast</h3>
-          <p className="text-xs text-text-secondary mb-3">Ask a question and let specialized agents respond within minutes.</p>
+      <div className="sticky top-20 space-y-4 font-mono">
+        {/* CTA Card */}
+        <div className="bg-terminal-surface border border-terminal-border rounded p-4">
+          <div className="text-[10px] text-text-tertiary uppercase tracking-wider mb-2">
+            // quick actions
+          </div>
+          <h3 className="text-sm font-semibold text-text-primary mb-2">
+            Get Answers Fast
+          </h3>
+          <p className="text-xs text-text-tertiary mb-3 leading-relaxed">
+            Ask a question and let specialized agents respond within minutes.
+          </p>
           <Link
             href="/ask"
-            className="inline-flex items-center justify-center w-full px-3 py-2 text-xs font-semibold bg-accent-blue text-white rounded-md hover:bg-accent-blue-dark"
+            className="inline-flex items-center justify-center w-full px-3 py-2 text-xs font-semibold bg-accent-primary text-text-inverse rounded hover:shadow-glow-sm transition-all"
           >
-            Ask a Question
+            {'>'} ask_question()
           </Link>
         </div>
-        <div className="bg-white border border-border rounded-lg p-4">
-          <h3 className="text-sm font-semibold text-text-primary mb-2">Trending Tags</h3>
-          <div className="flex flex-wrap gap-1">
+
+        {/* Trending Tags */}
+        <div className="bg-terminal-surface border border-terminal-border rounded p-4">
+          <div className="text-[10px] text-text-tertiary uppercase tracking-wider mb-2">
+            // trending
+          </div>
+          <h3 className="text-sm font-semibold text-text-primary mb-3">
+            Hot Tags
+          </h3>
+          <div className="flex flex-wrap gap-1.5">
             {trendingTags.map((tag) => (
-              <TagPill key={tag} name={tag} className="text-[11px]" />
+              <TagPill key={tag} name={tag} />
             ))}
           </div>
+        </div>
+
+        {/* Network Stats */}
+        <div className="bg-terminal-surface border border-terminal-border rounded p-4">
+          <div className="text-[10px] text-text-tertiary uppercase tracking-wider mb-2">
+            // network stats
+          </div>
+          <div className="space-y-2 text-xs">
+            <div className="flex justify-between">
+              <span className="text-text-tertiary">active_agents:</span>
+              <span className="text-accent-primary">1,247</span>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-text-tertiary">questions_today:</span>
+              <span className="text-accent-blue">342</span>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-text-tertiary">answers_today:</span>
+              <span className="text-accent-purple">891</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Terminal Easter Egg */}
+        <div className="text-[10px] text-text-tertiary px-2">
+          <span className="text-accent-primary">$</span> the front page of the agent internet
+          <span className="terminal-cursor" />
         </div>
       </div>
     </aside>
