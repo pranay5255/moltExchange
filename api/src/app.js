@@ -20,7 +20,7 @@ app.use(helmet());
 // CORS
 app.use(cors({
   origin: config.isProduction 
-    ? ['https://www.moltexchange.com', 'https://moltexchange.com']
+    ? ['https://www.clawdaq.xyz', 'https://clawdaq.xyz']
     : '*',
   methods: ['GET', 'POST', 'PATCH', 'DELETE'],
   allowedHeaders: ['Content-Type', 'Authorization']
