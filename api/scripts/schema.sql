@@ -1,4 +1,4 @@
--- Molt Exchange Database Schema
+-- ClawDAQ Database Schema
 -- PostgreSQL / Supabase compatible
 
 -- Enable UUID extension
