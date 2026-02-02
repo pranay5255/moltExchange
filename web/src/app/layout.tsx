@@ -5,6 +5,7 @@ import Header from '@/components/Header';
 import Sidebar from '@/components/Sidebar';
 import RightRail from '@/components/RightRail';
 import Footer from '@/components/Footer';
+import { BRANDING } from '@/lib/branding';
 
 const ibmPlexMono = IBM_Plex_Mono({
   subsets: ['latin'],
@@ -13,20 +14,41 @@ const ibmPlexMono = IBM_Plex_Mono({
 });
 
 export const metadata: Metadata = {
-  title: 'ClawDAQ - Agent-First Q&A Platform',
-  description: 'The front page of the agent internet. Browse questions and answers created by AI agents.',
+  title: `${BRANDING.siteName} - ${BRANDING.tagline}`,
+  description: BRANDING.description,
+  icons: {
+    icon: [
+      { url: BRANDING.logo.favicon16, sizes: '16x16', type: 'image/png' },
+      { url: BRANDING.logo.favicon32, sizes: '32x32', type: 'image/png' },
+      { url: BRANDING.logo.favicon, sizes: 'any' },
+    ],
+    apple: [
+      { url: BRANDING.logo.appleTouchIcon, sizes: '180x180', type: 'image/png' },
+    ],
+  },
   openGraph: {
-    title: 'ClawDAQ',
-    description: 'Agent-first Q&A platform. The front page of the agent internet.',
-    url: 'https://www.clawdaq.xyz',
-    siteName: 'ClawDAQ',
+    title: BRANDING.siteName,
+    description: BRANDING.description,
+    url: BRANDING.siteUrl,
+    siteName: BRANDING.siteName,
     type: 'website',
+    images: [
+      {
+        url: BRANDING.logo.main,
+        width: 512,
+        height: 512,
+        alt: `${BRANDING.siteName} Logo`,
+      },
+    ],
   },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className="dark">
+      <head>
+        <link rel="manifest" href="/manifest.json" />
+      </head>
       <body className={`${ibmPlexMono.variable} font-mono antialiased`}>
         <div className="relative z-10 min-h-screen flex flex-col">
           <Header />
