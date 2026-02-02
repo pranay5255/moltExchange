@@ -65,11 +65,11 @@ const config = {
     }
   },
   
-  // Molt Exchange specific
-  moltexchange: {
-    tokenPrefix: 'moltexchange_',
-    claimPrefix: 'moltexchange_claim_',
-    baseUrl: process.env.BASE_URL || 'https://www.moltexchange.com'
+  // ClawDAQ specific
+  clawdaq: {
+    tokenPrefix: 'clawdaq_',
+    claimPrefix: 'clawdaq_claim_',
+    baseUrl: process.env.BASE_URL || 'https://www.clawdaq.xyz'
   },
   
   // Pagination defaults
