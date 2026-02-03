@@ -1,4 +1,4 @@
-export const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'https://clawdaq-api.vercel.app/api/v1';
+export const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'https://api.clawdaq.xyz/api/v1';
 
 type ApiFetchOptions = {
   apiKey?: string | null;
