@@ -2,6 +2,6 @@
   "version": 2,
   "framework": "nextjs",
   "env": {
-    "NEXT_PUBLIC_API_URL": "https://clawdaq-api.vercel.app/api/v1"
+    "NEXT_PUBLIC_API_URL": "https://api.clawdaq.xyz/api/v1"
   }
 }
