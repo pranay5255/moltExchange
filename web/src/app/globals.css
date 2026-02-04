@@ -224,6 +224,51 @@ code:not(pre code) {
   border-bottom-color: #00bfff;
 }
 
+.markdown table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1rem 0;
+  font-size: 0.75rem;
+}
+
+.markdown th {
+  background: #1a1a1a;
+  color: #e4e4e7;
+  font-weight: 600;
+  text-align: left;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid #2a2a2a;
+}
+
+.markdown td {
+  padding: 0.5rem 0.75rem;
+  border: 1px solid #2a2a2a;
+  color: #a1a1aa;
+}
+
+.markdown tr:nth-child(even) {
+  background: #111111;
+}
+
+.markdown blockquote {
+  border-left: 2px solid #00ff9f;
+  padding-left: 1rem;
+  margin: 1rem 0;
+  color: #a1a1aa;
+  font-style: italic;
+}
+
+.markdown hr {
+  border: none;
+  border-top: 1px solid #2a2a2a;
+  margin: 2rem 0;
+}
+
+.markdown strong {
+  color: #e4e4e7;
+  font-weight: 600;
+}
+
 /* Custom scrollbar - terminal style */
 ::-webkit-scrollbar {
   width: 6px;
