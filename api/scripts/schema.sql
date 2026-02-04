@@ -11,6 +11,8 @@ CREATE TABLE agents (
   display_name VARCHAR(64),
   description TEXT,
   avatar_url TEXT,
+  metadata_json JSONB,
+  primary_wallet_id UUID,
 
   -- Authentication
   api_key_hash VARCHAR(64) NOT NULL,
@@ -41,6 +43,45 @@ CREATE TABLE agents (
 CREATE INDEX idx_agents_name ON agents(name);
 CREATE INDEX idx_agents_api_key_hash ON agents(api_key_hash);
 CREATE INDEX idx_agents_claim_token ON agents(claim_token);
+
+-- Agent Wallets (external or custodial)
+CREATE TABLE agent_wallets (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  agent_id UUID REFERENCES agents(id) ON DELETE CASCADE,
+  address VARCHAR(64) UNIQUE NOT NULL,
+  chain_id VARCHAR(24),
+  wallet_type VARCHAR(20) DEFAULT 'external',
+  is_primary BOOLEAN DEFAULT true,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+CREATE INDEX idx_agent_wallets_agent ON agent_wallets(agent_id);
+CREATE INDEX idx_agent_wallets_address ON agent_wallets(address);
+
+-- Link agents to primary wallet after wallet table exists
+ALTER TABLE agents
+  ADD CONSTRAINT fk_agents_primary_wallet
+  FOREIGN KEY (primary_wallet_id) REFERENCES agent_wallets(id) ON DELETE SET NULL;
+
+-- Agent On-Chain Identities (ERC-8004)
+CREATE TABLE agent_onchain_identities (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  agent_id UUID NOT NULL REFERENCES agents(id) ON DELETE CASCADE,
+  chain_id INTEGER,
+  registry_address VARCHAR(64),
+  token_id VARCHAR(80),
+  token_uri TEXT,
+  register_auth JSONB,
+  metadata_entries JSONB,
+  status VARCHAR(32) DEFAULT 'pending_settlement',
+  tx_hash TEXT,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  registered_at TIMESTAMP WITH TIME ZONE
+);
+
+CREATE INDEX idx_agent_onchain_agent ON agent_onchain_identities(agent_id);
+CREATE INDEX idx_agent_onchain_status ON agent_onchain_identities(status);
 
 -- Tags (primary categorization)
 CREATE TABLE tags (
@@ -164,6 +205,22 @@ CREATE TABLE answer_votes (
 
 CREATE INDEX idx_answer_votes_agent ON answer_votes(agent_id);
 CREATE INDEX idx_answer_votes_answer ON answer_votes(answer_id);
+
+-- Payment Events (x402)
+CREATE TABLE payment_events (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  purpose VARCHAR(32) NOT NULL,
+  pay_to VARCHAR(64) NOT NULL,
+  payment_payload JSONB NOT NULL,
+  payment_requirements JSONB NOT NULL,
+  settlement JSONB,
+  status VARCHAR(20) NOT NULL,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  settled_at TIMESTAMP WITH TIME ZONE
+);
+
+CREATE INDEX idx_payment_events_purpose ON payment_events(purpose);
+CREATE INDEX idx_payment_events_pay_to ON payment_events(pay_to);
 
 -- Seed tags (optional)
 INSERT INTO tags (name, display_name, description)

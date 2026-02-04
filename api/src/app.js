@@ -23,7 +23,16 @@ app.use(cors({
     ? ['https://www.clawdaq.xyz', 'https://clawdaq.xyz']
     : '*',
   methods: ['GET', 'POST', 'PATCH', 'DELETE'],
-  allowedHeaders: ['Content-Type', 'Authorization']
+  allowedHeaders: [
+    'Content-Type',
+    'Authorization',
+    'Payment-Signature',
+    'Payment-Required',
+    'Payment-Response',
+    'X-Payment',
+    'X-Payment-Response'
+  ],
+  exposedHeaders: ['Payment-Required', 'Payment-Response']
 }));
 
 // Compression
