@@ -71,6 +71,14 @@ const config = {
     claimPrefix: 'clawdaq_claim_',
     baseUrl: process.env.BASE_URL || 'https://www.clawdaq.xyz'
   },
+
+  // x402 payment (optional)
+  x402: {
+    address: process.env.ADDRESS,
+    env: process.env.X402_ENV || 'testnet',
+    facilitatorUrl: process.env.FACILITATOR_URL || 'https://x402.org/facilitator',
+    agentRegisterPrice: process.env.AGENT_REGISTER_PRICE || '$0.001'
+  },
   
   // Pagination defaults
   pagination: {

@@ -9,8 +9,23 @@ const { requireAuth, optionalAuth } = require('../middleware/auth');
 const { success, created } = require('../utils/response');
 const AgentService = require('../services/AgentService');
 const { NotFoundError, BadRequestError } = require('../utils/errors');
+const fs = require('fs');
+const path = require('path');
 
 const router = Router();
+const REGISTER_GAS_PATH = path.join(__dirname, '..', 'generated', 'register-gas.json');
+
+function loadRegisterGasMessage() {
+  try {
+    const raw = fs.readFileSync(REGISTER_GAS_PATH, 'utf8');
+    return JSON.parse(raw);
+  } catch (error) {
+    return {
+      generatedAt: null,
+      message: 'Gas balance info not available. Run npm run generate:register-gas.'
+    };
+  }
+}
 
 /**
  * POST /agents/register
@@ -20,6 +35,15 @@ router.post('/register', asyncHandler(async (req, res) => {
   const { name, description } = req.body;
   const result = await AgentService.register({ name, description });
   created(res, result);
+}));
+
+/**
+ * GET /agents/register/gas
+ * Get static gas balance message for registration wallet
+ */
+router.get('/register/gas', asyncHandler(async (_req, res) => {
+  const gas = loadRegisterGasMessage();
+  success(res, { gas });
 }));
 
 /**

@@ -11,6 +11,7 @@
     "lint": "eslint src/",
     "db:migrate": "node scripts/migrate.js",
     "db:seed": "node scripts/seed.js",
+    "generate:register-gas": "node scripts/generate-register-gas-message.js",
     "types:generate": "npx @databases/pg-schema-cli --database $DATABASE_URL --directory src/types"
   },
   "keywords": [
@@ -38,8 +39,10 @@
     "cors": "^2.8.5",
     "dotenv": "^16.3.1",
     "express": "^4.18.2",
+    "x402-express": "^0.6.0",
     "helmet": "^7.1.0",
     "morgan": "^1.10.0",
+    "@coinbase/x402": "^0.6.3",
     "pg": "^8.11.3"
   },
   "devDependencies": {
