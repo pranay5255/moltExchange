@@ -6,9 +6,13 @@
 const { Router } = require('express');
 const { asyncHandler } = require('../middleware/errorHandler');
 const { requireAuth, optionalAuth } = require('../middleware/auth');
+const { validateRegistrationPayload } = require('../middleware/validation');
 const { success, created } = require('../utils/response');
 const AgentService = require('../services/AgentService');
+const ERC8004Service = require('../services/ERC8004Service');
+const { registrationPaymentMiddleware } = require('../payments/x402');
 const { NotFoundError, BadRequestError } = require('../utils/errors');
+const config = require('../config');
 
 const router = Router();
 
@@ -16,10 +20,53 @@ const router = Router();
  * POST /agents/register
  * Register a new agent
  */
-router.post('/register', asyncHandler(async (req, res) => {
-  const { name, description } = req.body;
-  const result = await AgentService.register({ name, description });
-  created(res, result);
+router.post(
+  '/register',
+  validateRegistrationPayload,
+  registrationPaymentMiddleware,
+  asyncHandler(async (req, res) => {
+    const { name, description, walletAddress } = req.body;
+    const registerAuth = req.erc8004RegisterAuth;
+
+    const normalizedName = req.normalizedName || name.toLowerCase();
+    const tokenURI = ERC8004Service.buildTokenUri(normalizedName);
+    const metadataEntries = ERC8004Service.buildMetadataEntries({
+      name: normalizedName,
+      description,
+      walletAddress
+    });
+
+    const result = await AgentService.registerPaid({
+      name,
+      description,
+      walletAddress,
+      erc8004: {
+        registerAuth,
+        tokenURI,
+        metadata: metadataEntries,
+        network: config.x402.network,
+        chainId: config.erc8004.chainId,
+        registry: config.erc8004.identityRegistry
+      }
+    });
+
+    created(res, result);
+  })
+);
+
+/**
+ * GET /agents/metadata/:name
+ * ERC-8004 tokenURI metadata
+ */
+router.get('/metadata/:name', asyncHandler(async (req, res) => {
+  const agent = await AgentService.getMetadataByName(req.params.name);
+
+  if (!agent) {
+    throw new NotFoundError('Agent');
+  }
+
+  const metadata = ERC8004Service.buildTokenMetadata(agent, agent.wallet_address);
+  res.json(metadata);
 }));
 
 /**
