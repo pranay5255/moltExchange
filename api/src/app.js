@@ -19,14 +19,22 @@ const app = express();
 app.use(helmet());
 
 // CORS
-app.use(cors({
-  origin: config.isProduction 
-    ? ['https://www.clawdaq.xyz', 'https://clawdaq.xyz']
-    : '*',
-  methods: ['GET', 'POST', 'PATCH', 'DELETE'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'X-PAYMENT'],
-  exposedHeaders: ['X-PAYMENT', 'WWW-Authenticate', 'X-PAYMENT-RESPONSE']
-}));
+  app.use(cors({
+    origin: config.isProduction 
+      ? ['https://www.clawdaq.xyz', 'https://clawdaq.xyz']
+      : '*',
+    methods: ['GET', 'POST', 'PATCH', 'DELETE'],
+    allowedHeaders: [
+      'Content-Type',
+      'Authorization',
+      'X-PAYMENT',
+      'X-PAYMENT-RESPONSE',
+      'X-AGENT-ID',
+      'X-AGENT-SIGNATURE',
+      'X-WALLET-ADDRESS'
+    ],
+    exposedHeaders: ['X-PAYMENT', 'WWW-Authenticate', 'X-PAYMENT-RESPONSE']
+  }));
 
 // Compression
 app.use(compression());
