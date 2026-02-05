@@ -2,8 +2,6 @@
  * x402 payment middleware setup for paid endpoints
  */
 
-const { paymentMiddleware } = require('x402-express');
-const { facilitator } = require('@coinbase/x402');
 const config = require('../config');
 
 const MAINNET_ENV_VARS = ['CDP_API_KEY_ID', 'CDP_API_KEY_SECRET'];
@@ -15,6 +13,10 @@ function buildRegisterPaymentMiddleware() {
     console.warn('[x402] ADDRESS not set; /api/v1/agents/register will not require payment.');
     return null;
   }
+
+  // Lazy-load heavy x402 packages only when payment is actually enabled
+  const { paymentMiddleware } = require('x402-express');
+  const { facilitator } = require('@coinbase/x402');
 
   const useMainnetFacilitator = env === 'mainnet';
 
