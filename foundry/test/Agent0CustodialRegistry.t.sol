@@ -90,7 +90,7 @@ contract Agent0CustodialRegistryTest is Test {
         usdc = new MockERC20("USD Coin", "USDC", 6);
 
         // Deploy registry
-        registry = new Agent0CustodialRegistry(address(usdc));
+        registry = new Agent0CustodialRegistry(address(usdc), owner);
 
         // Mint USDC to test addresses
         usdc.mint(agent1, 100_000_000); // $100 USDC
@@ -111,7 +111,7 @@ contract Agent0CustodialRegistryTest is Test {
 
     function test_Constructor_RevertInvalidAddress() public {
         vm.expectRevert(Agent0CustodialRegistry.InvalidAddress.selector);
-        new Agent0CustodialRegistry(address(0));
+        new Agent0CustodialRegistry(address(0), owner);
     }
 
     // ============================================

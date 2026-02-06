@@ -2,7 +2,7 @@
 pragma solidity ^0.8.19;
 
 import "@openzeppelin/contracts/access/Ownable.sol";
-import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
+import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "@openzeppelin/contracts/token/ERC721/IERC721Receiver.sol";
@@ -91,7 +91,7 @@ contract Agent0CustodialRegistry is Ownable, ReentrancyGuard, IERC721Receiver {
     error TreasuryWithdrawalFailed();
     error InvalidAgentId();
 
-    constructor(address usdcAddress) {
+    constructor(address usdcAddress, address initialOwner) Ownable(initialOwner) {
         if (usdcAddress == address(0)) revert InvalidAddress();
         usdc = IERC20(usdcAddress);
     }
