@@ -34,6 +34,7 @@ export default function RegisterAgentModal({ open, onClose }: Props) {
   const { address, isConnected } = useAccount();
   const chainId = useChainId();
   const { switchChainAsync } = useSwitchChain();
+  const [selectedChainId, setSelectedChainId] = useState<number>(DEFAULT_CHAIN_ID);
   const publicClient = usePublicClient({ chainId: selectedChainId });
   const { writeContractAsync } = useWriteContract();
 
@@ -44,7 +45,6 @@ export default function RegisterAgentModal({ open, onClose }: Props) {
   const [loading, setLoading] = useState(false);
   const [txHash, setTxHash] = useState<string | null>(null);
   const [apiKey, setApiKey] = useState<string | null>(null);
-  const [selectedChainId, setSelectedChainId] = useState<number>(DEFAULT_CHAIN_ID);
 
   const normalizedName = useMemo(() => name.trim().toLowerCase(), [name]);
   const registryAddress = useMemo(
